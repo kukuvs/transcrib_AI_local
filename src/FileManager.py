@@ -1,10 +1,8 @@
-import os
 
 class FileManager:
     @staticmethod
     def write_text_to_file(text, filename):
-        """
-        Записывает текст в файл с указанием кодировки utf-8.
-        """
-        with open(filename, "a", encoding="utf-8") as f:
-            f.write(text)
+        if not text or None:  # Проверка на пустой текст или None
+            return
+        with open(filename, "a", encoding="utf-8") as file:
+            file.write(text)
