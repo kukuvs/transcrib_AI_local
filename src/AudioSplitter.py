@@ -3,7 +3,7 @@ import os
 
 class AudioSplitter:
     def __init__(self, split_parts=3):
-        if split_parts <= 0:
+        if split_parts <= 0 or not isinstance(split_parts, int) :
             raise ValueError("Number of split parts must be greater than 0")
         self.split_parts = split_parts
 

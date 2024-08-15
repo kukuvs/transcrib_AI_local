@@ -29,3 +29,8 @@ class TestAudioSplitter:
         # Ожидаем ValueError при split_parts=-1
         with pytest.raises(ValueError, match="Number of split parts must be greater than 0"):
             AudioSplitter(-1)
+            
+    def test_split_audio_with_dp_split_parts(self):
+        # Ожидаем ValueError при split_parts=-1
+        with pytest.raises(ValueError, match="Number of split parts must be greater than 0"):
+            AudioSplitter(0.5)
