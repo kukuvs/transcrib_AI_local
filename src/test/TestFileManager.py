@@ -1,4 +1,4 @@
-import pytest
+import pytest  # noqa: F401
 from unittest.mock import patch
 import sys
 sys.path.append('../')
