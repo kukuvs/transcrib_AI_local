@@ -1,87 +1,5 @@
 [
     {
-        "label": "pytest",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "pytest",
-        "description": "pytest",
-        "detail": "pytest",
-        "documentation": {}
-    },
-    {
-        "label": "sys",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "sys",
-        "description": "sys",
-        "detail": "sys",
-        "documentation": {}
-    },
-    {
-        "label": "AudioSplitter",
-        "importPath": "AudioSplitter",
-        "description": "AudioSplitter",
-        "isExtraImport": true,
-        "detail": "AudioSplitter",
-        "documentation": {}
-    },
-    {
-        "label": "AudioSplitter",
-        "importPath": "AudioSplitter",
-        "description": "AudioSplitter",
-        "isExtraImport": true,
-        "detail": "AudioSplitter",
-        "documentation": {}
-    },
-    {
-        "label": "patch",
-        "importPath": "unittest.mock",
-        "description": "unittest.mock",
-        "isExtraImport": true,
-        "detail": "unittest.mock",
-        "documentation": {}
-    },
-    {
-        "label": "patch",
-        "importPath": "unittest.mock",
-        "description": "unittest.mock",
-        "isExtraImport": true,
-        "detail": "unittest.mock",
-        "documentation": {}
-    },
-    {
-        "label": "AudioSegment",
-        "importPath": "pydub",
-        "description": "pydub",
-        "isExtraImport": true,
-        "detail": "pydub",
-        "documentation": {}
-    },
-    {
-        "label": "AudioSegment",
-        "importPath": "pydub",
-        "description": "pydub",
-        "isExtraImport": true,
-        "detail": "pydub",
-        "documentation": {}
-    },
-    {
-        "label": "FileManager",
-        "importPath": "FileManager",
-        "description": "FileManager",
-        "isExtraImport": true,
-        "detail": "FileManager",
-        "documentation": {}
-    },
-    {
-        "label": "FileManager",
-        "importPath": "FileManager",
-        "description": "FileManager",
-        "isExtraImport": true,
-        "detail": "FileManager",
-        "documentation": {}
-    },
-    {
         "label": "tkinter",
         "kind": 6,
         "isExtraImport": true,
@@ -124,6 +42,15 @@
         "documentation": {}
     },
     {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
         "label": "os",
         "kind": 6,
         "isExtraImport": true,
@@ -138,6 +65,14 @@
         "description": "main",
         "isExtraImport": true,
         "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "AudioSegment",
+        "importPath": "pydub",
+        "description": "pydub",
+        "isExtraImport": true,
+        "detail": "pydub",
         "documentation": {}
     },
     {
@@ -174,6 +109,22 @@
         "documentation": {}
     },
     {
+        "label": "AudioSplitter",
+        "importPath": "AudioSplitter",
+        "description": "AudioSplitter",
+        "isExtraImport": true,
+        "detail": "AudioSplitter",
+        "documentation": {}
+    },
+    {
+        "label": "FileManager",
+        "importPath": "FileManager",
+        "description": "FileManager",
+        "isExtraImport": true,
+        "detail": "FileManager",
+        "documentation": {}
+    },
+    {
         "label": "whisper",
         "kind": 6,
         "isExtraImport": true,
@@ -192,24 +143,6 @@
         "documentation": {}
     },
     {
-        "label": "TestAudioSplitter",
-        "kind": 6,
-        "importPath": "src.test.TestAudioSplitter",
-        "description": "src.test.TestAudioSplitter",
-        "peekOfCode": "class TestAudioSplitter:\n    def test_split_audio(self):\n        # Создаем объект AudioSplitter с split_parts=3\n        splitter = AudioSplitter(3)\n        # Создаем временный файл для тестирования\n        with patch('pydub.AudioSegment.from_file') as mock_from_file:\n            mock_from_file.return_value = AudioSegment.empty()\n            file_path = 'test.mp3'\n            output_dir = 'test_dir'\n            # Вызываем метод split_audio",
-        "detail": "src.test.TestAudioSplitter",
-        "documentation": {}
-    },
-    {
-        "label": "TestFileManager",
-        "kind": 6,
-        "importPath": "src.test.TestFileManager",
-        "description": "src.test.TestFileManager",
-        "peekOfCode": "class TestFileManager:\n    def test_write_text_to_file(self):\n        # Тестирует запись непустого текста в файл\n        with patch('builtins.open') as mock_open:\n            mock_open.return_value.__enter__.return_value.write.return_value = None\n            text = 'Hello, world!'\n            filename = 'test.txt'\n            # Вызываем метод write_text_to_file с непустым текстом\n            FileManager.write_text_to_file(text, filename)\n            # Проверяем, что метод open был вызван с правильными аргументами",
-        "detail": "src.test.TestFileManager",
-        "documentation": {}
-    },
-    {
         "label": "App",
         "kind": 6,
         "importPath": "src.veu.App",
@@ -223,7 +156,7 @@
         "kind": 6,
         "importPath": "src.AudioSplitter",
         "description": "src.AudioSplitter",
-        "peekOfCode": "class AudioSplitter:\n    def __init__(self, split_parts=3):\n        if split_parts <= 0 or not isinstance(split_parts, int) :\n            raise ValueError(\"Number of split parts must be greater than 0\")\n        self.split_parts = split_parts\n    def split_audio(self, file_path, output_dir):\n        \"\"\"\n        Дробит аудиофайл на указанное количество частей и сохраняет их в указанной директории.\n        \"\"\"\n        # Создаем директорию, если её нет",
+        "peekOfCode": "class AudioSplitter:\n    def __init__(self, split_parts=3):\n        self.split_parts = split_parts\n    def split_audio(self, file_path, output_dir):\n        \"\"\"\n        Дробит аудиофайл на указанное количество частей и сохраняет их в указанной директории.\n        \"\"\"\n        audio = AudioSegment.from_file(file_path)\n        duration = len(audio)  # Длительность в миллисекундах\n        part_duration = duration // self.split_parts",
         "detail": "src.AudioSplitter",
         "documentation": {}
     },
@@ -232,7 +165,7 @@
         "kind": 6,
         "importPath": "src.FileManager",
         "description": "src.FileManager",
-        "peekOfCode": "class FileManager:\n    @staticmethod\n    def write_text_to_file(text, filename):\n        if not text or None:  # Проверка на пустой текст или None\n            return\n        with open(filename, \"a\", encoding=\"utf-8\") as file:\n            file.write(text)",
+        "peekOfCode": "class FileManager:\n    @staticmethod\n    def write_text_to_file(text, filename):\n        \"\"\"\n        Записывает текст в файл с указанием кодировки utf-8.\n        \"\"\"\n        with open(filename, \"a\", encoding=\"utf-8\") as f:\n            f.write(text)",
         "detail": "src.FileManager",
         "documentation": {}
     },
