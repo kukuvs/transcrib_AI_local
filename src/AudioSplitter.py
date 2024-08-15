@@ -3,12 +3,17 @@ import os
 
 class AudioSplitter:
     def __init__(self, split_parts=3):
+        if split_parts <= 0 or not isinstance(split_parts, int) :
+            raise ValueError("Number of split parts must be greater than 0")
         self.split_parts = split_parts
 
     def split_audio(self, file_path, output_dir):
         """
         Дробит аудиофайл на указанное количество частей и сохраняет их в указанной директории.
         """
+        # Создаем директорию, если её нет
+        os.makedirs(output_dir, exist_ok=True)
+        
         audio = AudioSegment.from_file(file_path)
         duration = len(audio)  # Длительность в миллисекундах
         part_duration = duration // self.split_parts
