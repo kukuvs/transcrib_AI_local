@@ -1,6 +1,7 @@
 import pytest
 import sys
-sys.path.append('../')
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
 from AudioSplitter import AudioSplitter
 from unittest.mock import patch
 from pydub import AudioSegment
