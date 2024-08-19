@@ -5,14 +5,20 @@ import threading
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Указываем путь к директории src
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
 from main import process_audio_files
+
+
+
+
 
 class App:
     def __init__(self, root):
         self.root = root
         self.root.title("Audio Transcription App")
-        self.root.geometry("500x400")
+        self.root.geometry("500x500")
 
         # Переменные для путей
         self.input_file_path = tk.StringVar()
@@ -45,7 +51,6 @@ class App:
         self.progress.pack(pady=20)
 
         # Переменная для управления потоком
-        self.processing_thread = None
         self.stop_event = threading.Event()
 
     def browse_input_file(self):
@@ -68,22 +73,24 @@ class App:
         self.progress.config(value=0)
         self.stop_event.clear()
 
-        # Запуск процесса в отдельном потоке
-        self.processing_thread = threading.Thread(target=self.run_processing)
-        self.processing_thread.start()
+        # Запуск процесса
+        self.run_processing()
 
     def run_processing(self):
-        try:
-            # Запуск процесса распознавания и записи текста
-            process_audio_files(self.input_file_path.get(), self.output_dir_path.get(), self.split_parts.get(), self.update_progress)
-            
-            messagebox.showinfo("Готово", "Обработка завершена!")
-        except Exception as e:
-            messagebox.showerror("Ошибка", f"Произошла ошибка: {e}")
-        finally:
-            self.start_button.config(state=tk.NORMAL)
-            self.stop_button.config(state=tk.DISABLED)
-            self.progress.config(value=0)
+        def target():
+            try:
+                process_audio_files(self.input_file_path.get(), self.output_dir_path.get(), self.split_parts.get(), self.update_progress)
+                messagebox.showinfo("Готово", "Обработка завершена!")
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Произошла ошибка: {e}")
+            finally:
+                self.start_button.config(state=tk.NORMAL)
+                self.stop_button.config(state=tk.DISABLED)
+                self.progress.config(value=0)
+
+        # Запускаем обработку в отдельном потоке
+        processing_thread = threading.Thread(target=target)
+        processing_thread.start()
 
     def update_progress(self, current, total):
         progress_value = (current / total) * 100
@@ -92,8 +99,6 @@ class App:
 
     def stop_processing(self):
         self.stop_event.set()
-        if self.processing_thread:
-            self.processing_thread.join()
 
 if __name__ == "__main__":
     root = tk.Tk()
