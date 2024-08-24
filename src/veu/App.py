@@ -5,10 +5,9 @@ import threading
 import sys
 import os
 
-# Указываем путь к директории src
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
-from main import process_audio_files
+
+from ..main import process_audio_files
 
 
 
