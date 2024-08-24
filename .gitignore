@@ -1,3 +1,8 @@
-vscode/
-src/__pycache__/
+.vscode
+venv/
 /src/test/__pycache__
+src/test/.pytest_cache
+src/test/test_dir
+src/__pycache__
+build
+transcrib_AI_local/src/veu/__pycache__

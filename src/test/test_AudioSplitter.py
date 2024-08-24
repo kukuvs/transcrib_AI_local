@@ -1,6 +1,7 @@
 import pytest
 import sys
-sys.path.append('../')
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
 from AudioSplitter import AudioSplitter
 from unittest.mock import patch
 from pydub import AudioSegment
@@ -15,7 +16,7 @@ class TestAudioSplitter:
             mock_from_file.return_value = AudioSegment.empty()
             file_path = 'test.mp3'
             output_dir = 'test_dir'
-
+        
             # Вызываем метод split_audio
             output_files = splitter.split_audio(file_path, output_dir)
             assert len(output_files) == 3
