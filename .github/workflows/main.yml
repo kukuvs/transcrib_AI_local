@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  build:
+  Test_start:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,6 +17,8 @@ jobs:
         python-version: "3.11.1"
     - name: Install dependencies
       run: |
+        sudo apt update
+        sudo apt install ffmpeg
         python -m pip install --upgrade pip
         pip install -r requirements.txt
   
