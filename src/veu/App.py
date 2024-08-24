@@ -2,11 +2,6 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter import ttk
 import threading
-import sys
-import os
-
-
-
 from ..main import process_audio_files
 
 

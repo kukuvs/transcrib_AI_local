@@ -5,3 +5,4 @@ src/test/.pytest_cache
 src/test/test_dir
 src/__pycache__
 build
+/src/veu/__pycache__
