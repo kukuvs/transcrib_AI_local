@@ -1,5 +1,5 @@
 .vscode
-venv
+venv/
 /src/test/__pycache__
 src/test/.pytest_cache
 src/test/test_dir
