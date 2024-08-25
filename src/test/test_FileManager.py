@@ -1,9 +1,6 @@
 import pytest  # noqa: F401
 from unittest.mock import patch
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
-from FileManager import FileManager
+from ..FileManager import FileManager
 
 class TestFileManager:
     def test_write_text_to_file(self):
