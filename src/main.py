@@ -1,9 +1,11 @@
 import os
 import shutil
+import sys
+sys.path.append("./")
 from multiprocessing import Pool, cpu_count
-from .WhisperTranscriber import WhisperTranscriber
-from .AudioSplitter import AudioSplitter
-from .FileManager import FileManager
+from WhisperTranscriber import WhisperTranscriber
+from AudioSplitter import AudioSplitter
+from FileManager import FileManager
 
 def process_audio_file(args):
     """
@@ -39,12 +41,20 @@ def process_audio_files(input_file_path, output_dir_path, split_parts, progress_
     # Создаем список аргументов для процесса
     args_list = [(file_path, output_dir_path) for file_path in sliced_files]
 
+    recognized_texts = []
+
     # Используем пул процессов для параллельной обработки файлов
     with Pool(processes=cpu_count()) as pool:
-        for i, _ in enumerate(pool.imap_unordered(process_audio_file, args_list)):
+        for i, recognized_text in enumerate(pool.imap_unordered(process_audio_file, args_list)):
+            recognized_texts.append(recognized_text)
             if progress_callback:
                 progress_callback(i + 1, len(sliced_files))
+
+    # Объединяем все части текста в один
+    full_recognized_text = " ".join(recognized_texts)
 
     # Удаляем папку 'res' после завершения обработки
     if os.path.exists(res_dir):
         shutil.rmtree(res_dir)
+
+    return full_recognized_text
