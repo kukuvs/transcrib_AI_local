@@ -3,9 +3,9 @@ import shutil
 import sys
 sys.path.append("./")
 from multiprocessing import Pool, cpu_count
-from WhisperTranscriber import WhisperTranscriber
-from AudioSplitter import AudioSplitter
-from FileManager import FileManager
+from .WhisperTranscriber import WhisperTranscriber
+from .AudioSplitter import AudioSplitter
+from .FileManager import FileManager
 
 def process_audio_file(args):
     """
