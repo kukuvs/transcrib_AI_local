@@ -39,9 +39,14 @@ def test_transcribe_audio(transcriber, create_test_audio):
     test_audio = create_test_audio
     result = transcriber.transcribe_audio(test_audio)
     
-    assert isinstance(result, str)  # Проверка, что результат является строкой
-    assert len(result) > 0  # Проверка, что транскрибированный текст не пуст
-    assert "test audio file" in result.lower()  # Проверка, что транскрибированный текст содержит ожидаемую фразу
+    # Отладочный вывод для проверки результата транскрипции
+    print(f"Результат транскрипции: {result}")
+    
+    assert result is not None, "Транскрибированный текст не должен быть None"
+    assert isinstance(result, str), "Результат должен быть строкой"
+    assert len(result) > 0, "Транскрибированный текст не должен быть пуст"
+    assert "test audio file" in result.lower(), "Ожидаемая фраза не найдена в транскрибированном тексте"
+
 
 def test_clear_model(transcriber):
     """
