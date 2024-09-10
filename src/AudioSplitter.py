@@ -40,8 +40,3 @@ class AudioSplitter:
             logging.error(f"Failed to split audio file '{file_path}': {e}")
             return []
 
-# Пример использования
-if __name__ == "__main__":
-    splitter = AudioSplitter(split_parts=3)
-    output_files = splitter.split_audio("example.mp3", "output_directory")
-    print(output_files)
