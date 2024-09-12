@@ -38,42 +38,52 @@ def process_audio_file(args):
         transcriber.clear_model()
         logging.info(f"Model cleared for file: {file_path}")
 
+        # Удаление исходного аудиофайла после обработки
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                logging.info(f"Audio file removed: {file_path}")
+            else:
+                logging.warning(f"Audio file not found for removal: {file_path}")
+        except Exception as e:
+            logging.error(f"Error removing audio file: {file_path}. Error: {e}")
+
 def process_audio_files(input_file_path, output_dir_path, split_parts, progress_callback=None):
-    """
-    Основной процесс обработки аудиофайлов: дробление, транскрипция и сохранение текста.
-    """
     try:
         logging.info(f"Starting audio file processing for: {input_file_path}")
-        # Инициализация компонентов
         splitter = AudioSplitter(split_parts)
         res_dir = os.path.join(output_dir_path, "res")
         os.makedirs(res_dir, exist_ok=True)
         logging.info(f"Created temporary directory: {res_dir}")
 
-        # Дробим аудиофайл
+        # Дробление аудиофайла
         sliced_files = splitter.split_audio(input_file_path, res_dir)
         logging.info(f"Audio file split into {len(sliced_files)} parts")
 
-        # Создаем список аргументов для процесса
+        # Создание списка аргументов для параллельной обработки
         args_list = [(file_path, output_dir_path) for file_path in sliced_files]
 
         recognized_texts = []
 
-        # Используем пул процессов для параллельной обработки файлов
+        # Параллельная обработка файлов
         with Pool(processes=cpu_count()) as pool:
             for i, recognized_text in enumerate(pool.imap_unordered(process_audio_file, args_list)):
-                recognized_texts.append(recognized_text)  # Собираем результаты транскрипции
+                recognized_texts.append(recognized_text)
                 if progress_callback:
                     progress_callback(i + 1, len(sliced_files))
 
-        # Объединяем все части текста в один
         full_recognized_text = " ".join(recognized_texts)
         logging.info("All transcriptions combined into a single text")
 
-        # Удаляем папку 'res' после завершения обработки
-        if os.path.exists(res_dir):
-            shutil.rmtree(res_dir)
-            logging.info(f"Temporary directory removed: {res_dir}")
+        # Удаление временной директории после обработки
+        try:
+            if os.path.exists(res_dir):
+                shutil.rmtree(res_dir)
+                logging.info(f"Temporary directory removed: {res_dir}")
+            else:
+                logging.warning(f"Temporary directory not found for removal: {res_dir}")
+        except Exception as e:
+            logging.error(f"Error removing temporary directory: {res_dir}. Error: {e}")
 
         return full_recognized_text
     except Exception as e:
