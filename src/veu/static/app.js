@@ -56,3 +56,17 @@ function checkProgress() {
 
 	xhr.send()
 }
+
+document.getElementById('theme-toggle').addEventListener('click', function () {
+	document.body.classList.toggle('dark-theme')
+})
+
+document
+	.getElementById('file-input')
+	.addEventListener('change', function (event) {
+		var fileName =
+			event.target.files.length > 0
+				? event.target.files[0].name
+				: 'Выберите аудиофайл'
+		document.getElementById('file-label').textContent = fileName
+	})

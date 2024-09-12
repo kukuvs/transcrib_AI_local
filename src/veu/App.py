@@ -1,6 +1,8 @@
+import os
+import shutil
+import logging
 from flask import Flask, request, render_template, jsonify
 from werkzeug.utils import secure_filename
-import os
 from ..main import process_audio_files
 import threading
 
@@ -37,8 +39,23 @@ def upload_file():
     def process_and_update_progress():
         global progress
         progress[0] = 0
-        full_recognized_text = process_audio_files(file_path, output_dir, split_parts, lambda i, total: progress.__setitem__(0, i * 100 // total))
-        progress[0] = 100
+        try:
+            # Обработка аудиофайлов
+            full_recognized_text = process_audio_files(file_path, output_dir, split_parts, lambda i, total: progress.__setitem__(0, i * 100 // total))
+            progress[0] = 100
+        except Exception as e:
+            logging.error(f"Processing error: {e}")
+            progress[0] = -1  # Отметить ошибку
+
+        # Удаление исходного файла после обработки
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                logging.info(f"Audio file removed: {file_path}")
+            else:
+                logging.warning(f"Audio file not found for removal: {file_path}")
+        except Exception as e:
+            logging.error(f"Error removing audio file: {file_path}. Error: {e}")
 
     thread = threading.Thread(target=process_and_update_progress)
     thread.start()

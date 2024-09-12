@@ -9,14 +9,15 @@
 <body>
     <div class="container">
         <h1>Audio Transcription App</h1>
-        
+
         <form id="upload-form">
-            <label for="file">Выберите аудиофайл:</label>
-            <input type="file" id="file" name="file" accept="audio/*" required><br><br>
-            
-            <label for="output_dir">Выберите папку для сохранения результата:</label>
-            <input type="text" id="output_dir" name="output_dir" placeholder="Путь к папке" required><br><br>
-            
+            <div id="file-labels">
+                <label id="file-label" for="file-input">Выберите аудиофайл</label>
+                <input type="file" id="file-input" name="file" accept="audio/*" required>
+                <label id="output-file-label" for="output-dir-input">Путь для сохранения результата:</label>
+                <input type="text" id="output-dir-input" name="output_dir" required>
+            </div>
+
             <label for="split_parts">Количество частей:</label>
             <input type="number" id="split_parts" name="split_parts" min="1" max="10" value="3"><br><br>
 
@@ -30,6 +31,8 @@
         </div>
 
         <div id="message"></div>
+
+        <button id="theme-toggle">Сменить тему</button>
 
         <script src="/static/app.js"></script>
     </div>
