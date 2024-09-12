@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Transcription App</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Audio Transcription App</h1>
+        
+        <form id="upload-form">
+            <label for="file">Выберите аудиофайл:</label>
+            <input type="file" id="file" name="file" accept="audio/*" required><br><br>
+            
+            <label for="output_dir">Выберите папку для сохранения результата:</label>
+            <input type="text" id="output_dir" name="output_dir" placeholder="Путь к папке" required><br><br>
+            
+            <label for="split_parts">Количество частей:</label>
+            <input type="number" id="split_parts" name="split_parts" min="1" max="10" value="3"><br><br>
+
+            <button type="submit">Запустить</button>
+        </form>
+
+        <div id="progress-container">
+            <h3>Прогресс:</h3>
+            <progress id="progress-bar" value="0" max="100"></progress>
+            <p id="progress-text">0%</p>
+        </div>
+
+        <div id="message"></div>
+
+        <script src="/static/app.js"></script>
+    </div>
+</body>
+</html>

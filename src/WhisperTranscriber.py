@@ -41,12 +41,3 @@ class WhisperTranscriber:
         except Exception as e:
             logging.error(f"Failed to clear Whisper model: {e}")
             raise
-
-# Пример использования
-if __name__ == "__main__":
-    transcriber = WhisperTranscriber()
-    try:
-        text = transcriber.transcribe_audio("path_to_your_audio_file.wav")
-        print(text)
-    finally:
-        transcriber.clear_model()
