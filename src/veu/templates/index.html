@@ -10,7 +10,7 @@
     <div class="container">
         <h1>Audio Transcription App</h1>
 
-        <form id="upload-form">
+        <form id="upload-form" enctype="multipart/form-data">
             <div id="file-labels">
                 <label id="file-label" for="file-input">Выберите аудиофайл</label>
                 <input type="file" id="file-input" name="file" accept="audio/*" required>
@@ -24,7 +24,7 @@
             <button type="submit">Запустить</button>
         </form>
 
-        <div id="progress-container">
+        <div id="progress-container" style="display: none;">
             <h3>Прогресс:</h3>
             <progress id="progress-bar" value="0" max="100"></progress>
             <p id="progress-text">0%</p>
