@@ -1,8 +1,9 @@
-// Добавляем обработчик события для формы загрузки
 document.getElementById('upload-form').addEventListener('submit', function (e) {
 	e.preventDefault() // Предотвращаем стандартное поведение формы
 
 	var formData = new FormData(this) // Создаем объект FormData из формы
+	console.log([...formData.entries()]) // Вывод всех полей формы в консоль для отладки
+
 	var xhr = new XMLHttpRequest() // Создаем новый объект XMLHttpRequest
 
 	xhr.open('POST', '/upload', true) // Открываем соединение для отправки данных на сервер
@@ -80,50 +81,3 @@ function checkProgress() {
 			'Ошибка отправки запроса: ' + error.message
 	}
 }
-
-// Добавляем обработчик события для переключения темы
-document.getElementById('theme-toggle').addEventListener('click', function () {
-	// Переключаем класс темы у body
-	document.body.classList.toggle('dark-theme')
-})
-
-// Добавляем обработчик события для ввода файла
-document
-	.getElementById('file-input')
-	.addEventListener('change', function (event) {
-		// Получаем имя выбранного файла или отображаем сообщение по умолчанию
-		var fileName =
-			event.target.files.length > 0
-				? event.target.files[0].name
-				: 'Выберите аудиофайл'
-		document.getElementById('file-label').textContent = fileName
-	})
-
-// Добавляем обработчик события для проверки ввода файла
-document
-	.getElementById('file-input')
-	.addEventListener('input', function (event) {
-		var fileInput = event.target
-		var file = fileInput.files[0]
-
-		if (file) {
-			// Проверка типа файла
-			if (file.type !== 'audio/mpeg' && file.type !== 'audio/wav') {
-				document.getElementById('message').innerHTML =
-					'Неподдерживаемый тип файла. Пожалуйста, выберите файл в формате MP3 или WAV.'
-				fileInput.value = '' // Очищаем поле ввода
-				return
-			}
-
-			// Проверка размера файла
-			if (file.size > 10 * 1024 * 1024) {
-				// 10 MB
-				document.getElementById('message').innerHTML =
-					'Файл слишком большой. Пожалуйста, выберите файл меньше 10 MB.'
-				fileInput.value = '' // Очищаем поле ввода
-				return
-			}
-
-			document.getElementById('message').innerHTML = '' // Очищаем сообщение об ошибке
-		}
-	})

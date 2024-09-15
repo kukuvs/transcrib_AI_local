@@ -18,9 +18,16 @@ progress = [0]
 def index():
     return render_template('index.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # Возвращаем пустой ответ для favicon
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     global progress
+    logging.debug(f"Request form data: {request.form}")
+    logging.debug(f"Request files: {request.files}")
+    
     if 'file' not in request.files:
         logging.error("No file part in request")
         return jsonify({'error': 'No file part'}), 400
@@ -30,7 +37,12 @@ def upload_file():
         logging.error("No selected file")
         return jsonify({'error': 'No selected file'}), 400
 
-    if file.stream.tell() == 0:
+    # Сбрасываем указатель на начало файла перед проверкой размера
+    file.stream.seek(0, os.SEEK_END)  # Перемещаемся в конец файла
+    file_size = file.stream.tell()    # Узнаем текущую позицию (размер файла)
+    file.stream.seek(0)               # Возвращаем указатель в начало
+
+    if file_size == 0:
         logging.error("Empty file")
         return jsonify({'error': 'Empty file'}), 400
 
