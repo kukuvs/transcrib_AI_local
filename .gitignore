@@ -6,3 +6,4 @@ src/test/test_dir
 src/__pycache__
 build
 transcrib_AI_local/src/veu/__pycache__
+/src/veu/__pycache__
