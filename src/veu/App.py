@@ -18,23 +18,53 @@ progress = [0]
 def index():
     return render_template('index.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # Возвращаем пустой ответ для favicon
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     global progress
+    logging.debug(f"Request form data: {request.form}")
+    logging.debug(f"Request files: {request.files}")
+    
     if 'file' not in request.files:
-        return jsonify({'error': 'No file part'})
+        logging.error("No file part in request")
+        return jsonify({'error': 'No file part'}), 400
 
     file = request.files['file']
     if file.filename == '':
-        return jsonify({'error': 'No selected file'})
+        logging.error("No selected file")
+        return jsonify({'error': 'No selected file'}), 400
+
+    # Сбрасываем указатель на начало файла перед проверкой размера
+    file.stream.seek(0, os.SEEK_END)  # Перемещаемся в конец файла
+    file_size = file.stream.tell()    # Узнаем текущую позицию (размер файла)
+    file.stream.seek(0)               # Возвращаем указатель в начало
+
+    if file_size == 0:
+        logging.error("Empty file")
+        return jsonify({'error': 'Empty file'}), 400
 
     filename = secure_filename(file.filename)
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(file_path)
+    try:
+        file.save(file_path)
+    except Exception as e:
+        logging.error(f"Error saving file: {e}")
+        return jsonify({'error': 'Error saving file'}), 500
 
-    output_dir = request.form['output_dir']
-    split_parts = int(request.form['split_parts'])
-    
+    output_dir = request.form.get('output_dir')
+    if not output_dir:
+        logging.error("No output directory specified")
+        return jsonify({'error': 'No output directory specified'}), 400
+
+    try:
+        split_parts = int(request.form['split_parts'])
+    except (KeyError, ValueError):
+        logging.error("Invalid split parts value")
+        return jsonify({'error': 'Invalid split parts value'}), 400
+
     # Запуск обработки в отдельном потоке
     def process_and_update_progress():
         global progress

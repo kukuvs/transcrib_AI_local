@@ -3,5 +3,5 @@
 
 
 #Запуск и установка зависимостей
-установите зависимости при помощи ```pip install -r requirements.txt```
+установите зависимости при помощи ```pip install -r requirements.txt```и ```winget install ffmpeg```
 Для запуска перейдите в корневую папку проекта и выполните команду``` python -m src.veu.App ```

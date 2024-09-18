@@ -35,8 +35,11 @@ def process_audio_file(args):
         raise
     finally:
         # Очистка модели
-        transcriber.clear_model()
-        logging.info(f"Model cleared for file: {file_path}")
+        try:
+            transcriber.clear_model()
+            logging.info(f"Model cleared for file: {file_path}")
+        except Exception as e:
+            logging.error(f"Error clearing model for file: {file_path}. Error: {e}")
 
         # Удаление исходного аудиофайла после обработки
         try:
@@ -57,8 +60,12 @@ def process_audio_files(input_file_path, output_dir_path, split_parts, progress_
         logging.info(f"Created temporary directory: {res_dir}")
 
         # Дробление аудиофайла
-        sliced_files = splitter.split_audio(input_file_path, res_dir)
-        logging.info(f"Audio file split into {len(sliced_files)} parts")
+        try:
+            sliced_files = splitter.split_audio(input_file_path, res_dir)
+            logging.info(f"Audio file split into {len(sliced_files)} parts")
+        except Exception as e:
+            logging.error(f"Error splitting audio file: {input_file_path}. Error: {e}")
+            raise
 
         # Создание списка аргументов для параллельной обработки
         args_list = [(file_path, output_dir_path) for file_path in sliced_files]
@@ -66,11 +73,15 @@ def process_audio_files(input_file_path, output_dir_path, split_parts, progress_
         recognized_texts = []
 
         # Параллельная обработка файлов
-        with Pool(processes=cpu_count()) as pool:
-            for i, recognized_text in enumerate(pool.imap_unordered(process_audio_file, args_list)):
-                recognized_texts.append(recognized_text)
-                if progress_callback:
-                    progress_callback(i + 1, len(sliced_files))
+        try:
+            with Pool(processes=cpu_count()) as pool:
+                for i, recognized_text in enumerate(pool.imap_unordered(process_audio_file, args_list)):
+                    recognized_texts.append(recognized_text)
+                    if progress_callback:
+                        progress_callback(i + 1, len(sliced_files))
+        except Exception as e:
+            logging.error(f"Error during parallel processing of audio files. Error: {e}")
+            raise
 
         full_recognized_text = " ".join(recognized_texts)
         logging.info("All transcriptions combined into a single text")
