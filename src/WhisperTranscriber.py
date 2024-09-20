@@ -6,6 +6,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class WhisperTranscriber:
+    
     def __init__(self, device="cuda" if torch.cuda.is_available() else "cpu"):
         self.device = device
         logging.info(f"Initializing WhisperTranscriber with device: {self.device}")
