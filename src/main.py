@@ -6,65 +6,93 @@ from .WhisperTranscriber import WhisperTranscriber
 from .AudioSplitter import AudioSplitter
 from .FileManager import FileManager
 
-# Настройка логирования
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+# Настройка логирования (по умолчанию уровень INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def process_audio_file(args):
     """
     Обрабатывает один аудиофайл: транскрибирует и записывает результат.
+    
+    Args:
+        args (tuple): file_path (str) - путь к аудиофайлу, 
+                      output_dir_path (str) - директория для сохранения результата.
+    
+    Returns:
+        str: Распознанный текст из аудиофайла.
     """
     file_path, output_dir_path = args
     transcriber = WhisperTranscriber()
     file_manager = FileManager()
 
     try:
-        logging.info(f"Processing audio file: {file_path}")
+        logging.debug(f"Processing audio file: {file_path}")
+        
         # Транскрибируем аудиофайл
         text = transcriber.transcribe_audio(file_path)
-        logging.info(f"Transcription successful for file: {file_path}")
+        logging.debug(f"Transcription successful for file: {file_path}")
 
         # Записываем результат в файл
         output_text_file = os.path.join(output_dir_path, "recognized.txt")
         file_manager.write_text_to_file(f"{file_path}\n{text}\n\n", output_text_file)
-        logging.info(f"Transcription result written to file: {output_text_file}")
+        logging.debug(f"Transcription result written to file: {output_text_file}")
 
-        return text  # Возвращаем результат транскрипции
+        return text
     except Exception as e:
         logging.error(f"Error processing audio file: {file_path}. Error: {e}")
         raise
     finally:
-        # Очистка модели
         transcriber.clear_model()
-        logging.info(f"Model cleared for file: {file_path}")
+        logging.debug(f"Model cleared for file: {file_path}")
 
-        # Удаление исходного аудиофайла после обработки
-        try:
-            if os.path.exists(file_path):
+        # Удаление аудиофайла после обработки
+        if os.path.exists(file_path):
+            try:
                 os.remove(file_path)
-                logging.info(f"Audio file removed: {file_path}")
-            else:
-                logging.warning(f"Audio file not found for removal: {file_path}")
-        except Exception as e:
-            logging.error(f"Error removing audio file: {file_path}. Error: {e}")
+                logging.debug(f"Audio file removed: {file_path}")
+            except Exception as e:
+                logging.error(f"Error removing audio file: {file_path}. Error: {e}")
+        else:
+            logging.warning(f"Audio file not found for removal: {file_path}")
+
 
 def process_audio_files(input_file_path, output_dir_path, split_parts, progress_callback=None):
+    """
+    Обрабатывает основной аудиофайл: разбивает на части, транскрибирует и объединяет результаты.
+
+    Args:
+        input_file_path (str): Путь к исходному аудиофайлу.
+        output_dir_path (str): Директория для сохранения результатов.
+        split_parts (int): Количество частей, на которые нужно разделить аудиофайл.
+        progress_callback (function, optional): Функция для отслеживания прогресса.
+
+    Returns:
+        str: Полный распознанный текст из всех частей аудиофайла.
+    """
+    if not os.path.isfile(input_file_path):
+        raise ValueError(f"Invalid input file path: {input_file_path}")
+
+    if not os.path.isdir(output_dir_path):
+        raise ValueError(f"Invalid output directory path: {output_dir_path}")
+
     try:
         logging.info(f"Starting audio file processing for: {input_file_path}")
-        splitter = AudioSplitter(split_parts)
+        
+        # Создание временной директории для хранения частей
         res_dir = os.path.join(output_dir_path, "res")
         os.makedirs(res_dir, exist_ok=True)
-        logging.info(f"Created temporary directory: {res_dir}")
+        logging.debug(f"Created temporary directory: {res_dir}")
 
-        # Дробление аудиофайла
+        # Разделение аудиофайла
+        splitter = AudioSplitter(split_parts)
         sliced_files = splitter.split_audio(input_file_path, res_dir)
         logging.info(f"Audio file split into {len(sliced_files)} parts")
 
-        # Создание списка аргументов для параллельной обработки
+        # Подготовка аргументов для параллельной обработки
         args_list = [(file_path, output_dir_path) for file_path in sliced_files]
 
         recognized_texts = []
 
-        # Параллельная обработка файлов
+        # Параллельная обработка частей файла
         with Pool(processes=cpu_count()) as pool:
             for i, recognized_text in enumerate(pool.imap_unordered(process_audio_file, args_list)):
                 recognized_texts.append(recognized_text)
@@ -75,14 +103,14 @@ def process_audio_files(input_file_path, output_dir_path, split_parts, progress_
         logging.info("All transcriptions combined into a single text")
 
         # Удаление временной директории после обработки
-        try:
-            if os.path.exists(res_dir):
+        if os.path.exists(res_dir):
+            try:
                 shutil.rmtree(res_dir)
-                logging.info(f"Temporary directory removed: {res_dir}")
-            else:
-                logging.warning(f"Temporary directory not found for removal: {res_dir}")
-        except Exception as e:
-            logging.error(f"Error removing temporary directory: {res_dir}. Error: {e}")
+                logging.debug(f"Temporary directory removed: {res_dir}")
+            except Exception as e:
+                logging.error(f"Error removing temporary directory: {res_dir}. Error: {e}")
+        else:
+            logging.warning(f"Temporary directory not found for removal: {res_dir}")
 
         return full_recognized_text
     except Exception as e:
