@@ -6,11 +6,17 @@ from werkzeug.utils import secure_filename
 from ..main import process_audio_files
 import threading
 
+
+# Создаем папку для загрузки файлов, если она не существует
+
+
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 # Глобальная переменная для отслеживания прогресса
 progress = [0]
 

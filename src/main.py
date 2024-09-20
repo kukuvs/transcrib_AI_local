@@ -1,6 +1,5 @@
 import os
 import shutil
-import sys
 import logging
 from multiprocessing import Pool, cpu_count
 from .WhisperTranscriber import WhisperTranscriber
