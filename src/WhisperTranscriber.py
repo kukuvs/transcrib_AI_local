@@ -10,21 +10,28 @@ class WhisperTranscriber:
     Класс для транскрибирования аудиофайлов с использованием модели Whisper.
     """
 
-    def __init__(self, device="cuda" if torch.cuda.is_available() else "cpu"):
-        """
-        Инициализация модели Whisper с указанием устройства (CUDA или CPU).
+def init_whisper_transcriber():
+    """
+    Инициализация модели Whisper с автоматическим выбором устройства (CUDA или CPU).
+    """
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    logging.info(f"Initializing WhisperTranscriber with device: {device}")
+    try:
+        model = whisper.load_model("medium", device=device)
+        logging.info("Whisper model loaded successfully")
+        return model
+    except Exception as e:
+        logging.error(f"Failed to load Whisper model: {e}")
+        raise
 
-        Args:
-            device (str): Устройство для выполнения модели ("cuda" или "cpu").
-        """
-        self.device = device
-        logging.info(f"Initializing WhisperTranscriber with device: {self.device}")
-        try:
-            self.model = whisper.load_model("medium", device=self.device)
-            logging.info("Whisper model loaded successfully")
-        except Exception as e:
-            logging.error(f"Failed to load Whisper model: {e}")
-            raise
+
+class WhisperTranscriber:
+    """
+    Класс для транскрибирования аудиофайлов с использованием модели Whisper.
+    """
+
+    def __init__(self):
+        self.model = init_whisper_transcriber()
 
     def transcribe_audio(self, file_name):
         """
