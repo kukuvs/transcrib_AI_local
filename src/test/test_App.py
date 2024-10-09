@@ -2,8 +2,7 @@ import os
 import shutil
 import pytest
 from io import BytesIO
-from flask import Flask
-from ..veu.App import app  # Замените your_module на имя вашего модуля
+from ..veu.App import app  
 
 @pytest.fixture
 def client():

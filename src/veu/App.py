@@ -1,10 +1,12 @@
 import os
+import threading
 import logging
 from flask import Flask, request, render_template, jsonify
 from werkzeug.utils import secure_filename
+
 from ..main import process_audio_files
 from src.WhisperTranscriber import init_whisper_transcriber
-import threading
+
 
 init_whisper_transcriber()# сразу загружаем модель
 # Настраиваем логирование

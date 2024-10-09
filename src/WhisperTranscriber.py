@@ -15,13 +15,13 @@ def init_whisper_transcriber():
     Инициализация модели Whisper с автоматическим выбором устройства (CUDA или CPU).
     """
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    logging.info(f"Initializing WhisperTranscriber with device: {device}")
+    logging.info("Initializing WhisperTranscriber with device: %s",device)
     try:
         model = whisper.load_model("medium", device=device)
         logging.info("Whisper model loaded successfully")
         return model
     except Exception as e:
-        logging.error(f"Failed to load Whisper model: {e}")
+        logging.error("Failed to load Whisper model: %s",e)
         raise
 
 

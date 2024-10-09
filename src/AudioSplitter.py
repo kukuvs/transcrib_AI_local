@@ -1,11 +1,14 @@
-from pydub import AudioSegment
 import os
 import logging
 
+from pydub import AudioSegment
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class AudioSplitter:
+    """
+    Класс для дробления аудиофайла на указанное количество частей.
+    """
     def __init__(self, split_parts=3):
         if split_parts <= 0 or not isinstance(split_parts, int):
             raise ValueError("Number of split parts must be greater than 0")
