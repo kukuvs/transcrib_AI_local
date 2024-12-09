@@ -1,4 +1,4 @@
-torch==2.0.1
+torch==2.2.0
 openai_whisper==20231117
 pydub==0.25.1
 pytest==8.3.2

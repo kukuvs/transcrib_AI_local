@@ -31,13 +31,14 @@ class WhisperTranscriber:
 
     def clear_model(self):
         """
-        Освобождает ресурсы, занятые моделью.
+        Frees up resources occupied by the model.
         """
         logging.info("Clearing Whisper model")
         try:
-            del self.model
-            torch.cuda.empty_cache()
-            logging.info("Whisper model cleared successfully")
+            if hasattr(self, 'model'):
+                del self.model
+                torch.cuda.empty_cache()
+                logging.info("Whisper model cleared successfully")
         except Exception as e:
             logging.error(f"Failed to clear Whisper model: {e}")
             raise

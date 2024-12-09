@@ -51,26 +51,21 @@ def process_audio_file(args):
 def process_audio_files(input_file_path, output_dir_path, split_parts, progress_callback=None):
     try:
         logging.info(f"Starting audio file processing for: {input_file_path}")
+
+        # Дробление аудиофайла
         splitter = AudioSplitter(split_parts)
         res_dir = os.path.join(output_dir_path, "res")
         os.makedirs(res_dir, exist_ok=True)
         logging.info(f"Created temporary directory: {res_dir}")
-
-        # Дробление аудиофайла
         sliced_files = splitter.split_audio(input_file_path, res_dir)
         logging.info(f"Audio file split into {len(sliced_files)} parts")
 
         # Создание списка аргументов для параллельной обработки
         args_list = [(file_path, output_dir_path) for file_path in sliced_files]
 
-        recognized_texts = []
-
         # Параллельная обработка файлов
         with Pool(processes=cpu_count()) as pool:
-            for i, recognized_text in enumerate(pool.imap_unordered(process_audio_file, args_list)):
-                recognized_texts.append(recognized_text)
-                if progress_callback:
-                    progress_callback(i + 1, len(sliced_files))
+            recognized_texts = list(pool.imap_unordered(process_audio_file, args_list))
 
         full_recognized_text = " ".join(recognized_texts)
         logging.info("All transcriptions combined into a single text")
@@ -85,7 +80,14 @@ def process_audio_files(input_file_path, output_dir_path, split_parts, progress_
         except Exception as e:
             logging.error(f"Error removing temporary directory: {res_dir}. Error: {e}")
 
+        if progress_callback:
+            progress_callback(len(sliced_files), len(sliced_files))
+
         return full_recognized_text
     except Exception as e:
         logging.error(f"Error processing audio files. Error: {e}")
         raise
+    finally:
+        # Окончательное закрытие процесса
+        logging.info(f"Finalizing process")
+        sys.exit(0)
